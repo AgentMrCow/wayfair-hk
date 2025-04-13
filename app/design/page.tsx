@@ -5,9 +5,25 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
-import { Sparkles, RefreshCw, Save, Smartphone, Heart, Download, Share2, Loader2 } from "lucide-react"
+import {
+  Sparkles,
+  RefreshCw,
+  Save,
+  Smartphone,
+  Heart,
+  Download,
+  Share2,
+  Loader2,
+} from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import Image from "next/image" // Use Next.js Image for optimization
 
 export default function DesignPage() {
   const [prompt, setPrompt] = useState("")
@@ -46,7 +62,9 @@ export default function DesignPage() {
         <div className="lg:col-span-1">
           <Card>
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Describe Your Ideal Furniture</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                Describe Your Ideal Furniture
+              </h2>
               <p className="text-gray-600 mb-4">
                 Be as specific as possible about style, materials, colors, and functionality.
               </p>
@@ -83,7 +101,11 @@ export default function DesignPage() {
                 </Button>
 
                 {generatedDesigns.length > 0 && (
-                  <Button variant="outline" onClick={generateDesigns} disabled={isGenerating}>
+                  <Button
+                    variant="outline"
+                    onClick={generateDesigns}
+                    disabled={isGenerating}
+                  >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Regenerate
                   </Button>
@@ -116,7 +138,9 @@ export default function DesignPage() {
             <div className="flex flex-col items-center justify-center h-full min-h-[400px] bg-gray-50 rounded-lg">
               <Loader2 className="h-12 w-12 text-rose-600 animate-spin mb-4" />
               <h3 className="text-xl font-medium">Generating Your Designs...</h3>
-              <p className="text-gray-600 mt-2">This may take a few moments</p>
+              <p className="text-gray-600 mt-2">
+                This may take a few moments
+              </p>
             </div>
           ) : generatedDesigns.length > 0 ? (
             <div>
@@ -125,37 +149,52 @@ export default function DesignPage() {
                   <div
                     key={index}
                     className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedDesign === design ? "border-rose-600 shadow-md" : "border-transparent"
+                      selectedDesign === design
+                        ? "border-rose-600 shadow-md"
+                        : "border-transparent"
                     }`}
                     onClick={() => setSelectedDesign(design)}
                   >
-                    <img
-                      src={design || "/placeholder.svg"}
-                      alt={`Generated design ${index + 1}`}
-                      className="w-full h-32 object-cover"
-                    />
+                    <div className="relative w-full h-32">
+                      <Image
+                        src={design || "/placeholder.svg"}
+                        alt={`Generated design ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
 
               {selectedDesign && (
                 <div>
-                  <div className="relative mb-6 bg-gray-100 rounded-lg overflow-hidden">
-                    <img
+                  <div className="relative mb-6 bg-gray-100 rounded-lg overflow-hidden h-[400px]">
+                    <Image
                       src={selectedDesign || "/placeholder.svg"}
                       alt="Selected furniture design"
-                      className="w-full h-[400px] object-contain"
+                      fill
+                      className="object-contain"
                     />
                     <div className="absolute top-4 right-4 flex gap-2">
-                      <Button size="sm" variant="secondary" className="rounded-full w-10 h-10 p-0">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="rounded-full w-10 h-10 p-0"
+                      >
                         <Heart className="h-5 w-5" />
                       </Button>
-                      <Button size="sm" variant="secondary" className="rounded-full w-10 h-10 p-0">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="rounded-full w-10 h-10 p-0"
+                      >
                         <Share2 className="h-5 w-5" />
                       </Button>
                     </div>
                   </div>
 
+                  {/* Customization Tabs */}
                   <Tabs defaultValue="customize">
                     <TabsList className="w-full mb-6">
                       <TabsTrigger value="customize" className="flex-1">
@@ -248,7 +287,9 @@ export default function DesignPage() {
                       <div className="space-y-4">
                         <div>
                           <h3 className="font-medium">Dimensions</h3>
-                          <p className="text-gray-600">Width: 78", Depth: 36", Height: 32"</p>
+                          <p className="text-gray-600">
+                            Width: 78&quot;, Depth: 36&quot;, Height: 32&quot;
+                          </p>
                         </div>
                         <div>
                           <h3 className="font-medium">Materials</h3>
@@ -274,10 +315,11 @@ export default function DesignPage() {
           ) : (
             <div className="flex flex-col items-center justify-center h-full min-h-[400px] bg-gray-50 rounded-lg p-8 text-center">
               <Sparkles className="h-12 w-12 text-gray-300 mb-4" />
-              <h3 className="text-xl font-medium mb-2">Your AI-Generated Designs Will Appear Here</h3>
+              <h3 className="text-xl font-medium mb-2">
+                Your AI-Generated Designs Will Appear Here
+              </h3>
               <p className="text-gray-600 max-w-md">
-                Describe your ideal furniture piece in detail, and our AI will generate custom designs based on your
-                description.
+                Describe your ideal furniture piece in detail, and our AI will generate custom designs based on your description.
               </p>
             </div>
           )}

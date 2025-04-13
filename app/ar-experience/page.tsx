@@ -263,10 +263,11 @@ export default function ARExperiencePage() {
 
                 {/* Simulated AR furniture */}
                 <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-32">
-                  <img
+                  <Image
                     src="/placeholder.svg?height=300&width=500"
                     alt="AR Furniture"
-                    className="w-full h-full object-contain"
+                    fill
+                    className="object-contain"
                   />
                 </div>
 
@@ -288,7 +289,7 @@ export default function ARExperiencePage() {
                 <div className="text-center p-8">
                   <Camera className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-xl font-medium mb-2">Ready to Scan</h3>
-                  <p className="text-gray-600">Click "Start Scanning" to begin the AR experience.</p>
+                  <p className="text-gray-600">Click &quot;Start Scanning&quot; to begin the AR experience.</p>
                 </div>
               </div>
             )}

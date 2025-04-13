@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Star } from "lucide-react"
+import Image from "next/image"
 
 export default function Testimonials() {
   const testimonials = [
@@ -42,13 +43,16 @@ export default function Testimonials() {
             <Card key={testimonial.id} className="border-none shadow-lg">
               <CardContent className="p-8">
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <img
+                  <div className="w-12 h-12 rounded-full overflow-hidden mr-4 relative">
+                    <Image
                       src={testimonial.image || "/placeholder.svg"}
                       alt={testimonial.name}
-                      className="w-full h-full object-cover"
+                      width={48}  // 12 * 4 = 48 px
+                      height={48}
+                      className="object-cover"
                     />
                   </div>
+
                   <div>
                     <h3 className="font-semibold">{testimonial.name}</h3>
                     <p className="text-sm text-gray-500">{testimonial.role}</p>
@@ -64,7 +68,7 @@ export default function Testimonials() {
                   ))}
                 </div>
 
-                <p className="text-gray-600 italic">"{testimonial.content}"</p>
+                <p className="text-gray-600 italic">&quot;{testimonial.content}&quot;</p>
               </CardContent>
             </Card>
           ))}

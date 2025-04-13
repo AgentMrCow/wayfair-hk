@@ -33,7 +33,7 @@ export default function Home() {
                   Design with AI
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+              <Button asChild size="lg" variant="outline" className="text-white border-white bg-white/10">
                 <Link href="/ar-experience">
                   <Smartphone className="mr-2 h-5 w-5" />
                   Experience in AR

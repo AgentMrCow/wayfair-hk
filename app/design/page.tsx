@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Slider } from "@/components/ui/slider"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 import {
   Sparkles,
   RefreshCw,
@@ -14,48 +14,62 @@ import {
   Download,
   Share2,
   Loader2,
-} from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import Image from "next/image" // Use Next.js Image for optimization
+} from "@/components/ui/select";
+import Image from "next/image"; // Use Next.js Image for optimization
 
 export default function DesignPage() {
-  const [prompt, setPrompt] = useState("")
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedDesigns, setGeneratedDesigns] = useState<string[]>([])
-  const [selectedDesign, setSelectedDesign] = useState<string | null>(null)
+  const [prompt, setPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedDesigns, setGeneratedDesigns] = useState<string[]>([]);
+  const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
 
-  // Mock function to simulate AI generation
-  const generateDesigns = () => {
-    if (!prompt.trim()) return
+  // Function to generate designs by calling our backend API
+  const generateDesigns = async () => {
+    if (!prompt.trim()) return;
+    setIsGenerating(true);
 
-    setIsGenerating(true)
+    try {
+      const response = await fetch("/api/generate-design", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+          model: "grok-2-image-1212", // specifying the grok-2-image-1212 model
+          width: 800,
+          height: 600,
+        }),
+      });
 
-    // Simulate API call delay
-    setTimeout(() => {
-      // Mock generated designs (would be from AI API in production)
-      const mockDesigns = [
-        "/placeholder.svg?height=600&width=800",
-        "/placeholder.svg?height=600&width=800",
-        "/placeholder.svg?height=600&width=800",
-        "/placeholder.svg?height=600&width=800",
-      ]
+      if (!response.ok) {
+        throw new Error("Failed to generate designs");
+      }
 
-      setGeneratedDesigns(mockDesigns)
-      setSelectedDesign(mockDesigns[0])
-      setIsGenerating(false)
-    }, 2000)
-  }
+      const data = await response.json();
+      // Assume the API returns an object { imageUrls: string[] }
+      setGeneratedDesigns(data.imageUrls);
+      setSelectedDesign(data.imageUrls[0]);
+    } catch (error) {
+      console.error("Error generating designs:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <main className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8">AI Furniture Generator</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-8">
+        AI Furniture Generator
+      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Prompt Input */}
@@ -66,7 +80,8 @@ export default function DesignPage() {
                 Describe Your Ideal Furniture
               </h2>
               <p className="text-gray-600 mb-4">
-                Be as specific as possible about style, materials, colors, and functionality.
+                Be as specific as possible about style, materials, colors, and
+                functionality.
               </p>
 
               <div className="mb-6">
@@ -77,7 +92,8 @@ export default function DesignPage() {
                   onChange={(e) => setPrompt(e.target.value)}
                 />
                 <p className="text-sm text-gray-500">
-                  Try to include style, materials, colors, and functionality in your description.
+                  Try to include style, materials, colors, and functionality in
+                  your description.
                 </p>
               </div>
 
@@ -117,13 +133,16 @@ export default function DesignPage() {
                   <h3 className="font-medium mb-3">Example Prompts:</h3>
                   <ul className="space-y-2 text-sm">
                     <li className="p-2 bg-gray-100 rounded cursor-pointer hover:bg-gray-200">
-                      Vintage-inspired coffee table with hidden storage and brass accents
+                      Vintage-inspired coffee table with hidden storage and brass
+                      accents
                     </li>
                     <li className="p-2 bg-gray-100 rounded cursor-pointer hover:bg-gray-200">
-                      Minimalist dining chair with ergonomic design in light oak wood
+                      Minimalist dining chair with ergonomic design in light oak
+                      wood
                     </li>
                     <li className="p-2 bg-gray-100 rounded cursor-pointer hover:bg-gray-200">
-                      Industrial bookshelf with metal frame and reclaimed wood shelves
+                      Industrial bookshelf with metal frame and reclaimed wood
+                      shelves
                     </li>
                   </ul>
                 </div>
@@ -211,7 +230,9 @@ export default function DesignPage() {
                     <TabsContent value="customize">
                       <div className="space-y-6">
                         <div>
-                          <h3 className="text-sm font-medium mb-2">Material</h3>
+                          <h3 className="text-sm font-medium mb-2">
+                            Material
+                          </h3>
                           <Select defaultValue="fabric">
                             <SelectTrigger>
                               <SelectValue placeholder="Select material" />
@@ -227,7 +248,9 @@ export default function DesignPage() {
                         </div>
 
                         <div>
-                          <h3 className="text-sm font-medium mb-2">Color</h3>
+                          <h3 className="text-sm font-medium mb-2">
+                            Color
+                          </h3>
                           <div className="flex gap-2 flex-wrap">
                             {[
                               "bg-slate-800",
@@ -269,9 +292,12 @@ export default function DesignPage() {
                     <TabsContent value="ar">
                       <div className="bg-gray-100 rounded-lg p-8 text-center">
                         <Smartphone className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                        <h3 className="text-xl font-medium mb-2">View in Your Space</h3>
+                        <h3 className="text-xl font-medium mb-2">
+                          View in Your Space
+                        </h3>
                         <p className="text-gray-600 mb-6">
-                          Use your smartphone camera to see how this furniture will look in your room.
+                          Use your smartphone camera to see how this furniture
+                          will look in your room.
                         </p>
                         <div className="flex flex-col gap-4 max-w-xs mx-auto">
                           <Button className="bg-rose-600 hover:bg-rose-700">
@@ -294,7 +320,8 @@ export default function DesignPage() {
                         <div>
                           <h3 className="font-medium">Materials</h3>
                           <p className="text-gray-600">
-                            Frame: Kiln-dried hardwood, Upholstery: 100% polyester, Legs: Solid oak
+                            Frame: Kiln-dried hardwood, Upholstery: 100% polyester,
+                            Legs: Solid oak
                           </p>
                         </div>
                         <div>
@@ -319,12 +346,13 @@ export default function DesignPage() {
                 Your AI-Generated Designs Will Appear Here
               </h3>
               <p className="text-gray-600 max-w-md">
-                Describe your ideal furniture piece in detail, and our AI will generate custom designs based on your description.
+                Describe your ideal furniture piece in detail, and our AI will
+                generate custom designs based on your description.
               </p>
             </div>
           )}
         </div>
       </div>
     </main>
-  )
+  );
 }

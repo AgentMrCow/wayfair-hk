@@ -10,16 +10,19 @@ interface RequestBody {
   height?: number;
 }
 
-// Update the URL if needed per the official xAI documentation.
-// In this example, we're trying "https://api.x.ai/v1/images/generations"
+// Define the expected structure of the xAI API response
+interface XAIResponse {
+  imageUrls: string[];
+}
+
+// Adjust the API endpoint URL as per xAI's documentation.
+// For example: https://api.x.ai/v1/images/generations
 const XAI_API_URL = "https://api.x.ai/v1/images/generations";
 
 export async function POST(request: Request) {
   try {
-    // Parse the incoming request JSON
     const body: RequestBody = await request.json();
 
-    // Validate required fields
     if (!body.prompt || !body.model) {
       return NextResponse.json(
         { error: "Missing required parameters: prompt or model" },
@@ -27,7 +30,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Retrieve the xAI API key from environment variables (make sure to set XAI_API_KEY)
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -36,26 +38,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Construct the payload. Additional parameters can be added per the xAI API docs.
     const payload = {
       prompt: body.prompt,
-      model: body.model, // e.g. "grok-2-image-1212"
+      model: body.model, // should be "grok-2-image-1212"
       width: body.width || 800,
       height: body.height || 600,
       num_images: 4, // Example: Requesting 4 images. Adjust as needed.
     };
 
-    // Make the fetch call to the xAI API endpoint
     const apiResponse = await fetch(XAI_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`, // Securely using our API key on the server side
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(payload),
     });
 
-    // Check if the API call was successful
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
       console.error("xAI API error:", errorText);
@@ -65,10 +64,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse the response from xAI
-    const data = await apiResponse.json();
+    // Explicitly declare the expected type instead of implicitly using any.
+    const data: XAIResponse = await apiResponse.json();
 
-    // Assuming the response contains an "imageUrls" field (an array of URL strings)
     return NextResponse.json({ imageUrls: data.imageUrls });
   } catch (error) {
     console.error("Error in /api/generate-design:", error);

@@ -31,7 +31,7 @@ type FurnitureKey = keyof typeof furnitureModels;
 export default function ARExperiencePage() {
   // Narrowing the type of selectedFurniture
   const [selectedFurniture, setSelectedFurniture] = useState<FurnitureKey | null>(null)
-  const [activeTab, setActiveTab] = useState("scan")
+  const [activeTab, setActiveTab] = useState("select")
   const [isScanning, setIsScanning] = useState(false)
   const [hasScanned, setHasScanned] = useState(false)
 

@@ -39,22 +39,22 @@ export default function ARExperiencePage() {
     {
       id: "sofa1",
       name: "Modern Minimalist Sofa",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/sofa.png?height=300&width=500",
     },
     {
       id: "table1",
       name: "Vintage Coffee Table",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/table.png?height=300&width=500",
     },
     {
       id: "chair1",
       name: "Scandinavian Dining Chair",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/chair.png?height=300&width=500",
     },
     {
       id: "bookshelf1",
       name: "Industrial Bookshelf",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/bookshelf.png?height=300&width=500",
     },
   ]
 

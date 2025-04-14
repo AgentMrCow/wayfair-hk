@@ -44,7 +44,7 @@ export default function DesignPage() {
         },
         body: JSON.stringify({
           prompt,
-          model: "grok-2-image-1212", // specifying the grok-2-image-1212 model
+          model: "grok-2-image-1212",
           width: 800,
           height: 600,
         }),
@@ -55,7 +55,12 @@ export default function DesignPage() {
       }
 
       const data = await response.json();
-      // Assume the API returns an object { imageUrls: string[] }
+
+      // Extra safeguard: Check that imageUrls exists and is an array
+      if (!Array.isArray(data.imageUrls)) {
+        throw new Error("Invalid response from the design API");
+      }
+
       setGeneratedDesigns(data.imageUrls);
       setSelectedDesign(data.imageUrls[0]);
     } catch (error) {
@@ -167,11 +172,10 @@ export default function DesignPage() {
                 {generatedDesigns.map((design, index) => (
                   <div
                     key={index}
-                    className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedDesign === design
+                    className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${selectedDesign === design
                         ? "border-rose-600 shadow-md"
                         : "border-transparent"
-                    }`}
+                      }`}
                     onClick={() => setSelectedDesign(design)}
                   >
                     <div className="relative w-full h-32">

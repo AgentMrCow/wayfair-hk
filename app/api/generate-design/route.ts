@@ -2,7 +2,6 @@
 
 import { NextResponse } from "next/server";
 
-// Define the type for our expected request body
 interface RequestBody {
   prompt: string;
   model: string;
@@ -10,13 +9,13 @@ interface RequestBody {
   height?: number;
 }
 
-// Define the expected structure of the xAI API response
-interface XAIResponse {
-  imageUrls: string[];
+// Define an interface for items in the response "data" array
+interface XAIDataItem {
+  url: string;
+  revised_prompt: string;
 }
 
-// Adjust the API endpoint URL as per xAI's documentation.
-// For example: https://api.x.ai/v1/images/generations
+// Adjust the API endpoint URL according to xAI documentation.
 const XAI_API_URL = "https://api.x.ai/v1/images/generations";
 
 export async function POST(request: Request) {
@@ -40,11 +39,13 @@ export async function POST(request: Request) {
 
     const payload = {
       prompt: body.prompt,
-      model: body.model, // should be "grok-2-image-1212"
+      model: body.model, // e.g. "grok-2-image-1212"
       width: body.width || 800,
       height: body.height || 600,
-      num_images: 4, // Example: Requesting 4 images. Adjust as needed.
+      num_images: 4, // Adjust as needed
     };
+
+    console.log("Payload sent to xAI:", payload);
 
     const apiResponse = await fetch(XAI_API_URL, {
       method: "POST",
@@ -55,19 +56,31 @@ export async function POST(request: Request) {
       body: JSON.stringify(payload),
     });
 
-    if (!apiResponse.ok) {
-      const errorText = await apiResponse.text();
-      console.error("xAI API error:", errorText);
-      return NextResponse.json(
-        { error: "Failed to generate designs from xAI" },
-        { status: 500 }
-      );
+    console.log("Status code from xAI:", apiResponse.status);
+    const responseJson = await apiResponse.json();
+    console.log("Response from xAI:", responseJson);
+
+    // Extract image URLs. Use XAIDataItem to type the items in the data array.
+    let imageUrls: string[] = [];
+    if (Array.isArray(responseJson.imageUrls)) {
+      imageUrls = responseJson.imageUrls;
+    } else if (Array.isArray(responseJson.data)) {
+      imageUrls = responseJson.data
+        .map((item: XAIDataItem) => item.url)
+        .filter((url: string) => typeof url === "string");
     }
 
-    // Explicitly declare the expected type instead of implicitly using any.
-    const data: XAIResponse = await apiResponse.json();
+    if (imageUrls.length === 0) {
+      console.error("No image URLs returned. Full response:", responseJson);
+      imageUrls = [
+        "/placeholder.svg?height=600&width=800",
+        "/placeholder.svg?height=600&width=800",
+        "/placeholder.svg?height=600&width=800",
+        "/placeholder.svg?height=600&width=800",
+      ];
+    }
 
-    return NextResponse.json({ imageUrls: data.imageUrls });
+    return NextResponse.json({ imageUrls });
   } catch (error) {
     console.error("Error in /api/generate-design:", error);
     return NextResponse.json(
